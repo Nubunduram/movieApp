@@ -64,7 +64,11 @@ function App() {
         date: new Date().toLocaleDateString()
       };
       dispatch(addComment(newComment));
-      reset();
+      reset({
+        comment: '',
+        note: '',
+        acceptConditions: false
+      });
     } catch (error) {
       setError("Une erreur est survenue lors de l'ajout du commentaire");
     }
@@ -86,93 +90,98 @@ function App() {
 
   return (
     <Container className="py-4">
-      <Card className="mb-4 border">
-        <Card.Img
-          variant="top"
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-          alt={movie.original_title}
-          className="card-img"
-        />
-        <Card.Body>
-          <Card.Title as="h3">{movie.original_title}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted"> Sortie le {new Date(movie.release_date).toLocaleDateString('fr-FR')}</Card.Subtitle>
-          <Card.Text>{movie.overview}</Card.Text>
-          <Card.Text>
-            Note moyenne : {movie.vote_average} ({movie.vote_count} votes)
-          </Card.Text>
-        </Card.Body>
-      </Card>
+      <Row className="justify-content-center">
+        <Col md={6}>
 
-      <div>
-        <h2>Commentaires</h2>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Ajouter un commentaire :</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              {...register('comment')}
-              isInvalid={!!errors.comment}
+
+          <Card className="mb-4 border">
+            <Card.Img
+              variant="top"
+              src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+              alt={movie.original_title}
+              className="card-img"
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.comment?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
+            <Card.Body>
+              <Card.Title as="h3">{movie.original_title}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted"> Sortie le {new Date(movie.release_date).toLocaleDateString('fr-FR')}</Card.Subtitle>
+              <Card.Text>{movie.overview}</Card.Text>
+              <Card.Text>
+                Note moyenne : {movie.vote_average} ({movie.vote_count} votes)
+              </Card.Text>
+            </Card.Body>
+          </Card>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Note :</Form.Label>
-            <Form.Select {...register('note')} isInvalid={!!errors.note}>
-              <option value="">Sélectionnez une note</option>
-              {[1, 2, 3, 4, 5].map(num => (
-                <option key={num} value={num}>{num}</option>
-              ))}
-            </Form.Select>
-            <Form.Control.Feedback type="invalid">
-              {errors.note?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
+          <div>
+            <h2>Commentaires</h2>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <Form.Group className="mb-3">
+                <Form.Label>Ajouter un commentaire :</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  {...register('comment')}
+                  isInvalid={!!errors.comment}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.comment?.message}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Check
-              type="checkbox"
-              label="J'accepte les conditions générales"
-              {...register('acceptConditions')}
-              isInvalid={!!errors.acceptConditions}
-              feedback={errors.acceptConditions?.message}
-              feedbackType="invalid"
-            />
-          </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Note :</Form.Label>
+                <Form.Select {...register('note')} isInvalid={!!errors.note}>
+                  <option value="">Sélectionnez une note</option>
+                  {[1, 2, 3, 4, 5].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {errors.note?.message}
+                </Form.Control.Feedback>
+              </Form.Group>
 
-          <Button variant="primary" type="submit">
-            Ajouter
-          </Button>
-        </Form>
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="J'accepte les conditions générales"
+                  {...register('acceptConditions')}
+                  isInvalid={!!errors.acceptConditions}
+                  feedback={errors.acceptConditions?.message}
+                  feedbackType="invalid"
+                />
+              </Form.Group>
 
-        {comments.length === 0 ? (
-          <Alert variant="info" className="mt-4">
-            Aucun commentaire pour le moment
-          </Alert>
-        ) : (
-          comments.map(comment => (
-            <Card key={comment.id} className="mt-3">
-              <Card.Body>
-                <div className="d-flex justify-content-between">
-                  <div className="fw-bold">Note : {comment.rating}/5</div>
-                </div>
-                <Card.Text>{comment.text}</Card.Text>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => dispatch(deleteComment(comment.id))}
-                >
-                  Supprimer
-                </Button>
-              </Card.Body>
-            </Card>
-          ))
-        )}
-      </div>
+              <Button variant="primary" type="submit">
+                Ajouter
+              </Button>
+            </Form>
 
+            {comments.length === 0 ? (
+              <Alert variant="info" className="mt-4">
+                Aucun commentaire pour le moment
+              </Alert>
+            ) : (
+              comments.map(comment => (
+                <Card key={comment.id} className="mt-3">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between">
+                      <div className="fw-bold">Note : {comment.rating}/5</div>
+                    </div>
+                    <Card.Text>{comment.text}</Card.Text>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => dispatch(deleteComment(comment.id))}
+                    >
+                      Supprimer
+                    </Button>
+                  </Card.Body>
+                </Card>
+              ))
+            )}
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 }
