@@ -4,9 +4,11 @@ h3 {
 
 .card-img {
   height: 500px;
+  object-fit: cover;
 }
 
-.container {
-  max-width: 500px;
+.loader-container {
   min-height: 100dvh;
+  display: grid;
+  place-items: center;
 }
